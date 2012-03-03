@@ -60,7 +60,7 @@ Matrix<T>::Matrix() : nrows(0), ncols(0)
 }
 
 // alternate constructor , creates NRows x Ncols matrix 
-// uses inherited constructor of Vector<T>(int) exmplicitly
+// uses inherited constructor of Vector<T>(int) explicitly
 // param Nrows - number of rows
 // param Ncols - number of columns
 // throwing exceptions from constructor is a bad practice, so no exception is thrown here, however negative values will be corrected 
@@ -163,7 +163,8 @@ bool operator==(const Matrix<T>& m1, const Matrix<T>& m2)
 	{
 		for(int j = 0; j < cols; j++)
 		{
-			if(m1(i, j) != m2(i, j)) return false;
+			// comlex class has only == operator
+			if(!(m1(i, j) == m2(i, j))) return false;
 		}
 	}
 

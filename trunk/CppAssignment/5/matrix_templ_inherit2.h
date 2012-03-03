@@ -36,7 +36,26 @@ public:
 	int getNcols() const; // get the number of cols
 
     friend Matrix<T> operator* <> (const Matrix<T>& m1, const Matrix<T>& m2); // operator * for matrix multiplication
-	friend bool operator==(const Matrix<T>& m1, const Matrix<T>& m2); // operator ==  for matrix comparison
+	//friend bool operator==(const Matrix<T>& m1, const Matrix<T>& m2); // operator ==  for matrix comparison
+	
+	friend bool operator==(const Matrix<T>& m1, const Matrix<T>& m2)
+	{
+		if(m1.getNrows() != m2.getNrows() || m1.getNcols() != m2.getNcols()) 
+			return false;
+
+		for(int i=0; i < m1.getNrows(); i++)
+		{
+			for(int j = 0; j < m1.getNcols(); j++)
+			{
+				//comparison without using '!=' operator due to the fact
+				//that Complex class does not contain this operator
+				if(!(m1[i][j] == m2[i][j]))
+					return false;
+			}
+		}
+		return true;	
+	}
+
     friend std::istream& operator>> <>(std::istream& is, Matrix<T>& m);// keyboard input
     friend std::ostream& operator<< <>(std::ostream& os, const Matrix<T>& m);// screen output
 
@@ -57,13 +76,20 @@ Matrix<T>::Matrix() : nrows(0), ncols(0)
 }
 
 // alternate constructor , creates NRows x Ncols matrix 
-// uses inherited constructor of Vector<T>(int) exmplicitly
+// uses inherited constructor of Vector<T>(int) explicitly
+// creates vector of vectors
 // param Nrows - number of rows
 // param Ncols - number of columns
 // throwing exceptions from constructor is a bad practice, so no exception is thrown here, however negative values will be corrected 
 template <typename T>
-Matrix<T>::Matrix(int rows, int cols) : Vector< Vector<T>(cols) >(rows), nrows(rows < 0 ?0:rows), ncols(cols < 0 ?0:cols)
+Matrix<T>::Matrix(int rows, int cols) : Vector<Vector<T>>(rows<0?0:rows), nrows(rows<0?0:rows), ncols(cols<0?0:cols)
 {
+	// creating rows
+	for(int i = 0; i < nrows; i++)
+	{
+		Vector<T> v(cols);
+		(*this)[i] = v;
+	}
 }
 
 // get the number of rows
@@ -122,24 +148,25 @@ Matrix<T> operator*(const Matrix<T>& m1, const Matrix<T>& m2)
 // param m1 - first matrix to compare
 // param m2 - second matrix to compare
 // returns true if matrices are equal and false if not
-template <typename T>
-bool operator==(const Matrix<T>& m1, const Matrix<T>& m2)
-{
-	if((m1.getNcols() != m2.getNcols()) || (m1.getNrows() != m2.getNrows())) return false;
-
-	int rows = m1.getNrows();
-	int cols = m1.getNcols();
-
-	for(int i = 0; i < rows; i++)
-	{
-		for(int j = 0; j < cols; j++)
-		{
-			if(m1(i, j) != m2(i, j)) return false;
-		}
-	}
-
-	return true;
-}
+//template <typename T>
+//bool operator==(const Matrix<T>& m1, const Matrix<T>& m2)
+//{
+//	if((m1.getNcols() != m2.getNcols()) || (m1.getNrows() != m2.getNrows())) return false;
+//
+//	int rows = m1.getNrows();
+//	int cols = m1.getNcols();
+//
+//	for(int i = 0; i < rows; i++)
+//	{
+//		for(int j = 0; j < cols; j++)
+//		{
+//			// comlex class has only == operator
+//			if(!(m1[i][j] == m2[i][j])) return false;
+//		}
+//	}
+//
+//	return true;
+//}
 
 // friend operator for keyboard input
 // param is - input stream object
@@ -187,7 +214,7 @@ std::ostream& operator<<(std::ostream& os, const Matrix<T>& m)
 		{
 			for(int j = 0; j < m.getNcols(); j++)
 			{
-				os << m[i, j]  << " ";
+				os << m[i][j]  << " ";
 			}
 		
 			os << std::endl;
@@ -222,7 +249,7 @@ std::ifstream& operator>>(std::ifstream& ifs, Matrix<T>& m)
 	{
 		for(int j = 0; j < cols; j++)
 		{
-			ifs >> m[i,j];
+			ifs >> m[i][j];
 		}
 	}
 
