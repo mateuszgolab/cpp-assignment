@@ -36,8 +36,13 @@ public:
 	int getNcols() const; // get the number of cols
 
     friend Matrix<T> operator* <> (const Matrix<T>& m1, const Matrix<T>& m2); // operator * for matrix multiplication
-	//friend bool operator==(const Matrix<T>& m1, const Matrix<T>& m2); // operator ==  for matrix comparison
-	
+
+	// friend operator == for matrix comparison
+	// param m1 - first matrix to compare
+	// param m2 - second matrix to compare
+	// returns true if matrices are equal and false if not
+	// operator definition must be placed in the scope of class definition due to the lack of <> brackets in operator declaration,
+	// forward declaration of this operator intends to find a template friend function
 	friend bool operator==(const Matrix<T>& m1, const Matrix<T>& m2)
 	{
 		if(m1.getNrows() != m2.getNrows() || m1.getNcols() != m2.getNcols()) 
@@ -47,8 +52,8 @@ public:
 		{
 			for(int j = 0; j < m1.getNcols(); j++)
 			{
-				//comparison without using '!=' operator due to the fact
-				//that Complex class does not contain this operator
+				// complex class does not have != operator defined
+				// workaround used
 				if(!(m1[i][j] == m2[i][j]))
 					return false;
 			}
@@ -144,29 +149,6 @@ Matrix<T> operator*(const Matrix<T>& m1, const Matrix<T>& m2)
 	return m;
 }
 
-// friend operator == for matrix comparison
-// param m1 - first matrix to compare
-// param m2 - second matrix to compare
-// returns true if matrices are equal and false if not
-//template <typename T>
-//bool operator==(const Matrix<T>& m1, const Matrix<T>& m2)
-//{
-//	if((m1.getNcols() != m2.getNcols()) || (m1.getNrows() != m2.getNrows())) return false;
-//
-//	int rows = m1.getNrows();
-//	int cols = m1.getNcols();
-//
-//	for(int i = 0; i < rows; i++)
-//	{
-//		for(int j = 0; j < cols; j++)
-//		{
-//			// comlex class has only == operator
-//			if(!(m1[i][j] == m2[i][j])) return false;
-//		}
-//	}
-//
-//	return true;
-//}
 
 // friend operator for keyboard input
 // param is - input stream object
