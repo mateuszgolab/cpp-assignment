@@ -1,77 +1,89 @@
 #include"matrix.h"
-#include<string>
-#include<sstream>
-
 
 using namespace std;
 
-// default constructor, uses default constructor for v
+// default constructor (empty matrix), uses default constructor for v
 Matrix::Matrix() : v(), nrows(0), ncols(0) 
 {
 }
 
-// alternate constructor
-Matrix::Matrix(int Nrows, int Ncols) : v(Nrows * Ncols) , nrows(Nrows), ncols(Ncols)
+// alternate constructor , creates NRows x Ncols matrix 
+// param Nrows - number of rows
+// param Ncols - number of columns
+// throwing exceptions from constructor is a bad practice, so no exception is thrown here, however negative values will be corrected
+Matrix::Matrix(int Nrows, int Ncols) : nrows(Nrows), ncols(Ncols)
 {
+	if(nrows < 0) nrows = 0;
+	if(ncols < 0) ncols = 0;
+
+	v = Vector(nrows * ncols);
 }
 
 // get the number of rows
+// returns number of rows
 int Matrix::getNrows() const
 {
 	return nrows;
 }
 
-// get the number of cols
+// get the number of columns
+// returns number of columns
 int Matrix::getNcols() const
 {
 	return ncols;
 }
 
-//  function call overload (-,-) for assignment
+// operator overloaded for accessing modifable elements
+// param i - row
+// param j - columns
+// throws std::out_of_range in case of accessing out of range element
+// returns matrix element from i-th row and j-th column
 double& Matrix::operator() (int i, int j)
 {
-	if(i < 0 || i >= nrows || j < 0 || j >= ncols) throw std::out_of_range("matrix access error");
+	if(i < 0 || i >= nrows || j < 0 || j >= ncols)
+		throw std::out_of_range("matrix access error");
+
 	return v[i * ncols + j];
 }
 
-// for reading matrix values
+// operator overloaded for accessing readable elements
+// param i - row
+// param j - columns
+// throws std::out_of_range in case of accessing out of range element
+// returns matrix element from i-th row and j-th column
 double Matrix::operator() (int i, int j) const
 {
-	if(i < 0 || i >= nrows || j < 0 || j >= ncols) throw std::out_of_range("matrix access error");
+	if(i < 0 || i >= nrows || j < 0 || j >= ncols)
+		throw std::out_of_range("matrix access error");
 	return v[i * ncols + j];
 }
 
-// operator * for matrix multiplication
+// friend operator * for matrix multiplication
+// param m1 - first matrix to multiply
+// param m2 - second matrix to multiply
+// throws exception if matrices cannot be multiplied together
+// returns m1 * m2 product
 Matrix operator*(const Matrix& m1, const Matrix& m2)
 {
 	if(m1.getNcols() != m2.getNrows()) 
 	{
-		ostringstream ss;
-	
-		string ex = "m1 matrix has ";
-		ss << m1.getNcols() ;
-		ex += ss.str();
-		ex += " columns";
-		ss.str("");
-		ex += " and m2 matrix has ";
-		ss << m2.getNrows() ;
-		ex += ss.str();
+		string ex = "matrices cannot be multiplied together because m1 matrix has ";
+		ex += Matrix::getString(m1.getNcols());
+		ex += " columns and m2 matrix has ";
+		ex += Matrix::getString(m2.getNrows());
 		ex += " rows";
 
 		throw invalid_argument(ex);
-		
 	}
 
-	int n = m1.getNcols();
-	
-	Matrix m(n, n);
+	Matrix m(m1.getNrows(), m2.getNcols());
 
-	for(int i = 0; i < n; i++)
+	for(int i = 0; i < m1.getNrows(); i++)
 	{
-		for(int j = 0; j < n; j++)
+		for(int j = 0; j < m2.getNcols(); j++)
 		{
 			m(i, j) = 0;
-			for(int k = 0; k < n; k++)
+			for(int k = 0; k < m1.getNcols(); k++)
 			{
 				m(i, j) += m1(i, k) * m2(k, j);
 			}
@@ -81,7 +93,10 @@ Matrix operator*(const Matrix& m1, const Matrix& m2)
 	return m;
 }
 
-// operator == for matrix comparison
+// friend operator == for matrix comparison
+// param m1 - first matrix to compare
+// param m2 - second matrix to compare
+// returns true if matrices are equal and false if not
 bool operator==(const Matrix& m1, const Matrix& m2)
 {
 	if((m1.getNcols() != m2.getNcols()) || (m1.getNrows() != m2.getNrows())) return false;
@@ -100,22 +115,35 @@ bool operator==(const Matrix& m1, const Matrix& m2)
 	return true;
 }
 
-// keyboard input
+// friend operator for keyboard input
+// param is - input stream object
+// param m - matrix
+// throws std::invalid_argument when improper input values
+// returns stream object
 istream& operator>>(istream& is, Matrix& m)
 {
 	int rows, cols;
 
-    cout << "input the size for the matrix (rows x cols)" << endl;
-    is >> rows >> cols;
-    //check input sanity
-    if((rows < 0) || (cols < 0)) throw std::invalid_argument("read error - negative matrix size");
+	cout << "input the size for the matrix (rows columns) : ";
+	is >> rows >> cols;
 
-    // prepare the matrix to hold rows x cols elements
+	//check input sanity
+	if((rows < 0) || (cols < 0))
+		throw std::invalid_argument("read error - negative matrix size");
+
+	if(rows == 0 && cols != 0)
+		throw std::invalid_argument("read error - improper number of rows");
+
+	if(cols == 0 && rows != 0)
+		throw std::invalid_argument("read error - improper number of columns");
+
+
+	// prepare the matrix to hold rows x cols elements
 	m = Matrix(rows, cols);
 
-    // input the elements
-    cout << "input "<<rows * cols<<" matrix  elements"<<endl;
-    for (int i = 0; i < rows; i++)
+	// input the elements
+	cout << "input "<<rows * cols<<" matrix  elements"<<endl;
+	for (int i = 0; i < rows; i++)
 	{
 		for(int j = 0; j < cols; j++)
 		{
@@ -123,48 +151,62 @@ istream& operator>>(istream& is, Matrix& m)
 		}
 	}
 
-    // return the stream object
-    return is;
+	// return the stream object
+	return is;
 }
 
-// screen output - user friendly
+// friend operator for screen output - user friendly
+// param os - output stream object
+// param m - matrix
+// returns stream object
 ostream& operator<<(ostream& os, const Matrix& m)
 {
 	if (m.getNcols() > 0 && m.getNrows() > 0)
 	{
-        os << "The matrix elements are" << endl;
+		os << "The matrix elements are" << endl;
 		for (int i = 0; i < m.getNrows(); i++) 
 		{
 			for(int j = 0; j < m.getNcols(); j++)
 			{
 				os << m(i, j)  << " ";
 			}
-		
+
 			os << endl;
 		}
-    }
-    else
-    {
-        os << "Matrix is empty." << endl;
-    }
-    return os;
+	}
+	else
+	{
+		os << "Matrix is empty." << endl;
+	}
+	return os;
 }
 
-// file input - raw data, compatible with file writing operator
+// overloaded friend operator for file input 
+// param ifs - input file stream object
+// throws std::invalid_argument exception when improper input values
+// returns stream object
 ifstream& operator>>(ifstream& ifs, Matrix& m)
 {
 	int rows, cols;
 
-	// read sizes from the file
-    ifs >> rows >> cols;
-    //check input sanity
-    if((rows < 0) || (cols < 0)) throw std::invalid_argument("read error - negative matrix size");
+	ifs >> rows >> cols;
 
-    // prepare the matrix to hold rows x cols elements
+	//check input sanity
+	if((rows < 0) || (cols < 0))
+		throw std::invalid_argument("read error - negative matrix size");
+
+	if(rows == 0 && cols != 0)
+		throw std::invalid_argument("read error - improper number of rows");
+
+	if(cols == 0 && rows != 0)
+		throw std::invalid_argument("read error - improper number of columns");
+
+
+	// prepare the matrix to hold rows x cols elements
 	m = Matrix(rows, cols);
 
-    // input the elements
-    for (int i = 0; i < rows; i++)
+	// input the elements
+	for (int i = 0; i < rows; i++)
 	{
 		for(int j = 0; j < cols; j++)
 		{
@@ -172,16 +214,19 @@ ifstream& operator>>(ifstream& ifs, Matrix& m)
 		}
 	}
 
-    // return the stream object
-    return ifs;
+	// return the stream object
+	return ifs;
 }
 
-// file output - raw data, comaptible with file reading operator
+// overloaded friend operator for file output 
+// param ofs - output file stream object
+// param m - matrix
+// returns stream object
 ofstream& operator<<(ofstream& ofs, const Matrix& m)
 {
 	//put matrix size in first line (even if it is empty)
 	ofs << m.getNrows() <<" "<< m.getNcols() << endl;
-    //put data in second line (if empty matrix nothing will be put)
+	//put data in second line (if empty matrix nothing will be put)
 	for (int i = 0; i < m.getNrows(); i++) 
 	{
 		for(int j = 0; j < m.getNcols(); j++)
@@ -190,5 +235,17 @@ ofstream& operator<<(ofstream& ofs, const Matrix& m)
 		}
 		ofs << endl;
 	}
-    return ofs;
+	return ofs;
+}
+
+// Converts integer to string
+// param i - integert to convert
+// returns string object
+string Matrix::getString(int i)
+{
+	// object to manipulate on strings
+	std::ostringstream ss;		
+	ss << i;
+
+	return ss.str();
 }
