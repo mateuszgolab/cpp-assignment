@@ -5,12 +5,19 @@
 #include <fstream>   //file IO
 #include <stdexcept> //provides exceptions
 #include "vector.h"  //we use Vector in Matrix implementation
+#include <string>	// provides string 
+#include <sstream>  // provides ostringstream
+
 
 class Matrix {
 private:
     Vector v;     // Vector used to store the matrix elements
     int nrows;    // number of rows of the matrix
     int ncols;    // number of columns of the matrix
+
+	//=========== added methods  ========================================
+	static std::string getString(int i); // converts int to string object
+	//====================================================================
 
 public:
     Matrix(); // default constructor, uses default constructor for v
