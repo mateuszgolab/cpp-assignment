@@ -80,6 +80,7 @@
     <ClInclude Include="vector_templ.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="complex.cpp" />
     <ClCompile Include="main6.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
