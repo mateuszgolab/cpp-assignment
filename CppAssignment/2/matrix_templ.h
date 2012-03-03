@@ -22,34 +22,34 @@ template <typename T> std::ofstream& operator<<(std::ofstream& ofs, const Matrix
 template <typename T>
 class Matrix {
 private:
-    Vector<T> v;     // Vector used to store the matrix elements
-    int nrows;    // number of rows of the matrix
-    int ncols;    // number of columns of the matrix
+	Vector<T> v;     // Vector used to store the matrix elements
+	int nrows;    // number of rows of the matrix
+	int ncols;    // number of columns of the matrix
 
 	//=========== added methods  ========================================
 	static std::string getString(int i); // converts int to string object
 	//====================================================================
 
 public:
-    Matrix(); // default constructor, uses default constructor for v
-    Matrix(int Nrows, int Ncols);  // alternate constructor
+	Matrix(); // default constructor, uses default constructor for v
+	Matrix(int Nrows, int Ncols);  // alternate constructor
 
 	int getNrows() const; // get the number of rows
 	int getNcols() const; // get the number of cols
 
-    T& operator() (int i, int j); //  function call overload (-,-) for assignment
-    const T& operator() (int i, int j) const; // for reading matrix values
+	T& operator() (int i, int j); //  function call overload (-,-) for assignment
+	const T& operator() (int i, int j) const; // for reading matrix values
 
-    friend Matrix<T> operator* <> (const Matrix<T>& m1, const Matrix<T>& m2); // operator * for matrix multiplication
+	friend Matrix<T> operator* <> (const Matrix<T>& m1, const Matrix<T>& m2); // operator * for matrix multiplication
 	friend bool operator== <> (const Matrix& m1, const Matrix& m2); // operator == for matrix comparison
 
-    friend std::istream& operator>> <>(std::istream& is, Matrix<T>& m);// keyboard input
-    friend std::ostream& operator<< <>(std::ostream& os, const Matrix<T>& m);// screen output
+	friend std::istream& operator>> <>(std::istream& is, Matrix<T>& m);// keyboard input
+	friend std::ostream& operator<< <>(std::ostream& os, const Matrix<T>& m);// screen output
 
-    //the file output operator is compatible with file input operator,
-    //ie. everything written can be read later.
-    friend std::ifstream& operator>> <>(std::ifstream& ifs, Matrix<T>& m);// file input
-    friend std::ofstream& operator<< <>(std::ofstream& ofs, const Matrix<T>& m);// file output
+	//the file output operator is compatible with file input operator,
+	//ie. everything written can be read later.
+	friend std::ifstream& operator>> <>(std::ifstream& ifs, Matrix<T>& m);// file input
+	friend std::ofstream& operator<< <>(std::ofstream& ofs, const Matrix<T>& m);// file output
 };
 
 // ====== Implementation ============================================================================
@@ -138,7 +138,7 @@ Matrix<T> operator*(const Matrix<T>& m1, const Matrix<T>& m2)
 	{
 		for(int j = 0; j < m2.getNcols(); j++)
 		{
-			m(i, j) = 0;
+			m(i, j) = T(0.0);
 			for(int k = 0; k < m1.getNcols(); k++)
 			{
 				m(i, j) += m1(i, k) * m2(k, j);
@@ -287,7 +287,7 @@ std::ofstream& operator<<(std::ofstream& ofs, const Matrix<T>& m)
 {
 	//put matrix size in first line (even if it is empty)
 	ofs << m.getNrows() <<" "<< m.getNcols() << std::endl;
-    //put data in second line (if empty matrix nothing will be put)
+	//put data in second line (if empty matrix nothing will be put)
 	for (int i = 0; i < m.getNrows(); i++) 
 	{
 		for(int j = 0; j < m.getNcols(); j++)
@@ -296,7 +296,7 @@ std::ofstream& operator<<(std::ofstream& ofs, const Matrix<T>& m)
 		}
 		ofs << std::endl;
 	}
-    return ofs;
+	return ofs;
 }
 
 // Converts integer to string

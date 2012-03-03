@@ -18,6 +18,7 @@ private:
     int n; // Number of elements
     T* pdata; // Pointer to the data
     void init(int n); // private function since user should not call it
+
 public:
     Vector(); // construct empty vector
     //alternate constructor, it is explicit since implicit

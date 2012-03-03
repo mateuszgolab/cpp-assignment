@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="complex.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="matrix_templ_inherit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -27,9 +24,15 @@
     <ClInclude Include="vector_templ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="complex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main6.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="complex.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

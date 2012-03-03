@@ -13,9 +13,9 @@
 // with some of the functions written inline
 class Complex {
 private:
-    double re, im;
+	double re, im;
 public:
-	
+
 	// default constructor (0 + 0i)
 	Complex() : re(0), im(0) {}
 
@@ -46,15 +46,23 @@ public:
 	// param re - real part to set
 	// returns modified complex
 	// inline method
-	Complex& setReal(double re);
+	Complex& setReal(double re)
+	{
+		this->re = re;
+		return *this;
+	}
 
 	// sets imaginary part
 	// param im - imaginary part to set
 	// returns modified complex
 	// inline method
-	Complex& setImag(double im);
+	Complex& setImag(double im)
+	{
+		this->im = im;
+		return *this;
+	}
 
-    // inline, overloaded + operator  
+	// inline, overloaded + operator  
 	// param c - complex to add
 	// returns result of addition
 	Complex operator+(const Complex& c) const { return Complex(re + c.getReal(), im + c.getImag()); }
@@ -62,8 +70,8 @@ public:
 	// inline, overloaded * operator  
 	// param c - complex to multiply
 	// returns result of multiplication
-    Complex operator*(const Complex& c) const { return Complex(re * c.getReal() - im * c.getImag(), im * c.getReal() + re * c.getImag());}
-   
+	Complex operator*(const Complex& c) const { return Complex(re * c.getReal() - im * c.getImag(), im * c.getReal() + re * c.getImag());}
+
 	// inline, overloaded == operator  
 	// param c - complex to compare
 	// returns result of comparison
@@ -72,19 +80,33 @@ public:
 	// inline, overloaded += operator  
 	// param c - complex to add
 	// returns result of addition
-	Complex& operator+=(const Complex& c);
+	Complex& operator+=(const Complex& c)
+	{
+		this->re += c.getReal();
+		this->im += c.getImag();
+
+		return *this;
+	}
 
 	// inline, overloaded = operator  
 	// param c - complex to assign
 	// returns assigned object
-    inline Complex& operator=(const Complex& c); 
+	Complex& operator=(const Complex& c)
+	{
+		if(*this == c) return *this;
 
-    friend std::ostream& operator<<(std::ostream& os, const Complex& c); //screen output
-    friend std::istream& operator>>(std::istream& is, Complex& c); //keyboard input
+		this->re = c.getReal();
+		this->im = c.getImag();
 
-    //the file output operator should be compatible with file input operator,
-    //ie. everything written can be read later.
-    friend std::ofstream& operator<<(std::ofstream& ofs, const Complex& c); //file output
+		return *this;
+	}
+
+	friend std::ostream& operator<<(std::ostream& os, const Complex& c); //screen output
+	friend std::istream& operator>>(std::istream& is, Complex& c); //keyboard input
+
+	//the file output operator should be compatible with file input operator,
+	//ie. everything written can be read later.
+	friend std::ofstream& operator<<(std::ofstream& ofs, const Complex& c); //file output
 	friend std::ifstream& operator>>(std::ifstream& ifs, Complex& c); //file input
 };
 
