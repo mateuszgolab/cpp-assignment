@@ -65,7 +65,7 @@ Matrix<T>::Matrix() : nrows(0), ncols(0)
 // param Ncols - number of columns
 // throwing exceptions from constructor is a bad practice, so no exception is thrown here, however negative values will be corrected 
 template <typename T>
-Matrix<T>::Matrix(int rows, int cols) : Vector<T>((rows < 0 ?0:rows) * (cols < 0 ?0:cols)), nrows(rows < 0 ?0:rows), ncols(cols < 0 ?0:cols)
+Matrix<T>::Matrix(int rows, int cols) : Vector<T>((rows<0?0:rows) * (cols<0?0:cols)), nrows(rows<0?0:rows), ncols(cols<0 ?0:cols)
 {
 }
 
@@ -94,8 +94,12 @@ int Matrix<T>::getNcols() const
 template <typename T>
 T& Matrix<T>::operator()(int i, int j)
 {
-	if(i < 0 || i >= nrows || j < 0 || j >= ncols) throw std::out_of_range("matrix access error");
-	return operator[](i * ncols + j);
+	int index = i * ncols + j;
+
+	if(index < 0 || index >= size())
+		throw std::out_of_range("matrix access error");
+
+	return operator[](index);
 }
 
 // operator overloaded for accessing readable elements
@@ -107,8 +111,12 @@ T& Matrix<T>::operator()(int i, int j)
 template <typename T>
 const T& Matrix<T>::operator()(int i, int j) const
 {
-	if(i < 0 || i >= nrows || j < 0 || j >= ncols) throw std::out_of_range("matrix access error");
-	return operator[](i * ncols + j);
+	int index = i * ncols + j;
+
+	if(index < 0 || index >= size())
+		throw std::out_of_range("matrix access error");
+
+	return operator[](index);
 }
 
 // friend operator * for matrix multiplication
