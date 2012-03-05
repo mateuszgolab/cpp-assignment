@@ -10,13 +10,17 @@ int main()
     {
 
     	Matrix<Complex> m1, m2;
+		
 
 	    std::cin >> m1;  // input matrix m1 from keyboard (as user wants)
 
 	    std::ifstream ifs("complex_matrix.dat");
 	    std::ofstream ofs("result.dat");
+			
 
 	    ifs >> m2;   // read matrix m2 from the file matrix.dat
+
+
 	  
 	    Matrix<Complex> m3;
 

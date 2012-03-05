@@ -17,7 +17,7 @@ int main()
 	    std::ofstream ofs("result.dat");
 
 	    ifs >> m2;   // read matrix m2 from the file matrix.dat
-	  
+
 	    Matrix<Complex> m3;
 
 	    m3 = m1*m2;    // multiply them together, store in m3
