@@ -39,7 +39,7 @@ public:
     const T& operator() (int i, int j) const; // for reading matrix values
 
     friend Matrix<T> operator* <> (const Matrix<T>& m1, const Matrix<T>& m2); // operator * for matrix multiplication
-	friend bool operator==(const Matrix<T>& m1, const Matrix<T>& m2); // operator ==  for matrix comparison
+	friend bool operator== <> (const Matrix<T>& m1, const Matrix<T>& m2); // operator ==  for matrix comparison
 
     friend std::istream& operator>> <>(std::istream& is, Matrix<T>& m);// keyboard input
     friend std::ostream& operator<< <>(std::ostream& os, const Matrix<T>& m);// screen output
